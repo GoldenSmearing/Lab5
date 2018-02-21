@@ -8,11 +8,41 @@
  * @see <a href="https://cs125.cs.illinois.edu/lab/8/">Lab 8 Description</a>
  */
 public class Bank {
+    /**
+     * The name of the bank.
+     */
+    private String bankName;
+    /**
+     * bankname setter.
+     * @param name the new name to set for the bank.
+     */
+    public void setBankName(final String name) {
+        this.bankName = name;
+    }
 
-    public String bankName;
 
+    /**
+     * gets the bank name.
+     * @return  the bank name.
+     */
+
+    public String getBankName() {
+        return this.bankName;
+    }
+
+    /**
+     * default bank constructor.
+     */
     public Bank() {
         bankName = "Illini Bank";
+    }
+
+    /**
+     * constructor plus name.
+     * @param name bank name.
+     */
+    public Bank(final String name) {
+        this.bankName = name;
     }
 
     /**
@@ -26,9 +56,13 @@ public class Bank {
      * @return boolean
      */
     public boolean withdrawMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+        if (amount > 0) {
+            if (bankAccount.getAccountBalance() >= amount) {
+                bankAccount.setAccountBalance(bankAccount.getAccountBalance() - amount);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -42,9 +76,11 @@ public class Bank {
      * @return boolean
      */
     public boolean depositMoney(final BankAccount bankAccount, final double amount) {
-        /*
-         * Implement this function
-         */
+        if (amount > 0) {
+            bankAccount.setAccountBalance(bankAccount.getAccountBalance() + amount);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -61,9 +97,14 @@ public class Bank {
 
     public boolean transferMoney(final BankAccount source, final BankAccount destination,
             final double amount) {
-        /*
-         * Implement this function
-         */
+        if (amount > 0) {
+            if (amount < source.getAccountBalance()) {
+                source.setAccountBalance(source.getAccountBalance() - amount);
+                destination.setAccountBalance(destination.getAccountBalance() + amount);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -74,23 +115,22 @@ public class Bank {
      */
 
     public void changeOwnerName(final BankAccount bankAccount, final String name) {
-        /*
-         * Implement this function
-         */
+        bankAccount.changeOwnerName(name);
     }
 
-    public static int totalAccounts = 0;
+    /**
+     * The number of accounts that have been made.
+     */
+    private static int numOfAccounts;
     /**
      * Uses static variable to get number of bank accounts opened.
      *
      * @return the total number of accounts
      */
-    public static int getNumberOfAccount() {
-        /*
-         * Implement this function
-         */
+    public static int totalAccounts() {
+        numOfAccounts = BankAccount.getNumAccounts();
+        return numOfAccounts;
     }
-
     /**
      * Main method for testing.
      *
@@ -112,15 +152,17 @@ public class Bank {
         // Deposit money to both accounts and print new balance
         bank.depositMoney(account1, 1000.0);
         bank.depositMoney(account2, 5000.0);
-
+        System.out.println(account1.getAccountBalance());
+        System.out.println(account2.getAccountBalance());
         // Withdraw money from Account 2 and print new balance
         bank.withdrawMoney(account2, 200.0);
-
+        System.out.println(account2.getAccountBalance());
         // Transfer money from Account 2 to Account 1 and print new balances
         bank.transferMoney(account2, account1, 350.0);
-
+        System.out.println(account1.getAccountBalance());
+        System.out.println(account2.getAccountBalance());
         // Print number of accounts
         System.out.print("Number of active accounts at " + bank.bankName + " are ");
-        System.out.println(Bank.totalAccounts);
+        System.out.println(Bank.totalAccounts());
     }
 }
